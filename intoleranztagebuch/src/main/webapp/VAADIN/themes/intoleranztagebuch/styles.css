@@ -1,0 +1,77 @@
+@import "../base/styles.css";
+
+.v-cache-loading-indicator {
+	background: spinner no-repeat;
+	background-size: 10px 10px;
+	position:absolute;
+	right: 5px;
+	top: 5px;
+	width:10px;
+	height:10px;
+	-webkit-animation-name: spinnerRotate;
+	-webkit-animation-duration: 2s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: linear;	
+}
+
+.v-view.ready {
+	background-image: none;
+}
+
+.details>.v-csslayout-margin  {
+/* 	background:white; */
+}
+
+.details .v-caption {
+	margin-top: 8px;
+	color:666;
+	font-style:italic;
+}
+
+.v-tk-view .details .v-button-caption {
+	line-height:18px !important;
+}
+
+.v-table-cell-wrapper {
+	padding-top:6px;
+	padding-bottom:6px;	
+	text-overflow: ellipsis;
+}
+
+div.olControlZoomPanel {
+	top: 3px;
+	left: 3px;	
+}
+
+div.olControlZoomPanel .olControlZoomInItemInactive,
+div.olControlZoomPanel .olControlZoomOutItemInactive {
+    background: rgba(0,0,0,0.2);
+    position: absolute;
+    width: 35px;
+	height: 35px;
+}
+div.olControlZoomPanel .olControlZoomInItemInactive {
+    border-radius: 5px 5px 0 0;
+}
+div.olControlZoomPanel .olControlZoomOutItemInactive {
+    border-radius: 0 0 5px 5px ;
+    top: 37px;
+}
+div.olControlZoomPanel .olControlZoomOutItemInactive:after ,
+div.olControlZoomPanel .olControlZoomInItemInactive:after{
+    font-weight: bold;
+    content   : '+';
+    font-size : 36px;
+    padding: 2px 7px;
+    z-index: 2000;
+    color     : #fff;
+    line-height: 1em;
+}
+div.olControlZoomPanel .olControlZoomOutItemInactive:after{
+    content: '–';
+    line-height: 0.9em;
+    padding: 0 8px;
+}
+div.olControlZoomPanel .olControlZoomToMaxExtentItemInactive {
+    display: none;
+}
