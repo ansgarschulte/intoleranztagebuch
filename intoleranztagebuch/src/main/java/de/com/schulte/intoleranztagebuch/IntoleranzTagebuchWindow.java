@@ -15,9 +15,9 @@ public class IntoleranzTagebuchWindow extends TouchKitWindow{
          * These configurations modify how the app behaves as "ios webapp".
          */
         addApplicationIcon(IntoleranzTagebuchApp.get().getURL()
-                + "VAADIN/themes/vornitologist/icon.png");
+                + "VAADIN/themes/intoleranztagebuch/icon.png");
         setStartupImage(IntoleranzTagebuchApp.get().getURL()
-                + "VAADIN/themes/vornitologist/startup.png");
+                + "VAADIN/themes/intoleranztagebuch/startup.png");
         setWebAppCapable(true);
         setPersistentSessionCookie(true);
     }
