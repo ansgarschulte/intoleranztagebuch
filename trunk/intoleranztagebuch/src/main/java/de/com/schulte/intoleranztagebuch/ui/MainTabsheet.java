@@ -26,20 +26,23 @@ public class MainTabsheet extends TabBarView {
 		/*
 		 * Populate main views
 		 */
-		LatestEntries settings = new LatestEntries();
-		Tab addTab = addTab(settings);
+		LatestEntries lastEntries = new LatestEntries();
+		Tab addTab = addTab(lastEntries);
 		addTab.setIcon(new ThemeResource("linegraphics/tools.png"));
 		addTab.setCaption("LatestEntries");
-		EntryEditor entryEditor = new EntryEditor();
-		addTab = addTab(entryEditor);
+		MyNavigationManager navigationManager = new MyNavigationManager();
+		addTab = addTab(navigationManager);
 		addTab.setIcon(new ThemeResource("tabsheet/pencil.png"));
 		addTab.setCaption("Editor");
 
+		// NavigationManager navigationManager = new NavigationManager();
+		// navigationManager.setCurrentComponent(entryEditor);
+		// navigationManager.setPreviousComponent(lastEntries);
 		/*
 		 * Make settings view as the default. This would not be best option for
 		 * a real application, but it also serves as our demos welcome page.
 		 */
-		setSelectedTab(entryEditor);
+		setSelectedTab(navigationManager);
 
 	}
 

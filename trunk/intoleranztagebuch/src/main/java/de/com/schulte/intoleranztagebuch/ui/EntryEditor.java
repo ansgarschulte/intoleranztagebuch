@@ -50,7 +50,6 @@ public class EntryEditor extends NavigationView implements ClickListener {
 
 	public EntryEditor() {
 		Locale locale = IntoleranzTagebuchApp.getApp().getLocale();
-
 		// set some sane default values for the entry
 		entry.setEatTime(new Date());
 
@@ -142,7 +141,7 @@ public class EntryEditor extends NavigationView implements ClickListener {
 
 			EntryDB.persist(entry);
 		}
-		getWindow().getParent().removeWindow(getWindow());
+		getNavigationManager().navigateTo(new LatestEntries());
 	}
 
 }

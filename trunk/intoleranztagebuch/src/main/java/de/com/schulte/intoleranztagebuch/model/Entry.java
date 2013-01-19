@@ -1,8 +1,16 @@
 package de.com.schulte.intoleranztagebuch.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Entry {
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+public class Entry implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1361932826041345715L;
 
 	private Date eatTime;
 	private String meal;
@@ -85,6 +93,10 @@ public class Entry {
 
 	public void setSupposedCause(String supposedCause) {
 		this.supposedCause = supposedCause;
+	}
+
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 }
