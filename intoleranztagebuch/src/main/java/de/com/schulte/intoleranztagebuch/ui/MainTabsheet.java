@@ -35,9 +35,6 @@ public class MainTabsheet extends TabBarView {
 		addTab.setIcon(new ThemeResource("tabsheet/pencil.png"));
 		addTab.setCaption("Editor");
 
-		// NavigationManager navigationManager = new NavigationManager();
-		// navigationManager.setCurrentComponent(entryEditor);
-		// navigationManager.setPreviousComponent(lastEntries);
 		/*
 		 * Make settings view as the default. This would not be best option for
 		 * a real application, but it also serves as our demos welcome page.

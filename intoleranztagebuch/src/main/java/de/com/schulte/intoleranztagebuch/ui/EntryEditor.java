@@ -5,6 +5,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.vaadin.addon.formbinder.PreCreatedFieldsHelper;
 
 import com.vaadin.addon.touchkit.ui.NavigationView;
@@ -23,10 +25,13 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
 import de.com.schulte.intoleranztagebuch.IntoleranzTagebuchApp;
+import de.com.schulte.intoleranztagebuch.SpringContextHelper;
 import de.com.schulte.intoleranztagebuch.model.Entry;
 import de.com.schulte.intoleranztagebuch.model.EntryDB;
 import de.com.schulte.intoleranztagebuch.util.Translations;
 
+@Component
+@Scope("session")
 public class EntryEditor extends NavigationView implements ClickListener {
 
 	/**
@@ -48,7 +53,13 @@ public class EntryEditor extends NavigationView implements ClickListener {
 	private DateField discomfortTimeField;
 	private TextField supposedCauseField;
 
+	private EntryDB entryDB;
+
 	public EntryEditor() {
+		SpringContextHelper helper = new SpringContextHelper(
+				IntoleranzTagebuchApp.getApp());
+		entryDB = (EntryDB) helper.getBean("entryDB");
+
 		Locale locale = IntoleranzTagebuchApp.getApp().getLocale();
 		// set some sane default values for the entry
 		entry.setEatTime(new Date());
@@ -104,7 +115,7 @@ public class EntryEditor extends NavigationView implements ClickListener {
 		discomfortTimeField.setWidth("100%");
 
 		discomfortsField = new ComboBox(tr.getString("discomforts"));
-		discomfortsField.setContainerDataSource(EntryDB.getDiscomforts(locale));
+		discomfortsField.setContainerDataSource(entryDB.getDiscomforts(locale));
 		discomfortsField.setWidth("100%");
 		discomfortsField.setFilteringMode(ComboBox.FILTERINGMODE_CONTAINS);
 		discomfortsField.setItemCaptionPropertyId("lang");
@@ -139,7 +150,7 @@ public class EntryEditor extends NavigationView implements ClickListener {
 				return;
 			}
 
-			EntryDB.persist(entry);
+			entryDB.persist(entry);
 		}
 		getNavigationManager().navigateTo(new LatestEntries());
 	}

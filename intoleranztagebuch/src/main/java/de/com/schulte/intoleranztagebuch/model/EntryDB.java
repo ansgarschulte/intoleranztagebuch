@@ -1,5 +1,6 @@
 package de.com.schulte.intoleranztagebuch.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -10,9 +11,14 @@ import com.vaadin.data.util.IndexedContainer;
 
 import de.com.schulte.intoleranztagebuch.util.Translations;
 
-public class EntryDB {
+public class EntryDB implements Serializable {
 
-	public static Container getDiscomforts(Locale locale) {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6109802182896950053L;
+
+	public Container getDiscomforts(Locale locale) {
 		IndexedContainer indexedContainer = new IndexedContainer(
 				getAllDiscomforts());
 		indexedContainer.addContainerProperty("lang", String.class, "");
@@ -27,7 +33,7 @@ public class EntryDB {
 		return indexedContainer;
 	}
 
-	private static List<String> getAllDiscomforts() {
+	private List<String> getAllDiscomforts() {
 		List<String> discomforts = new ArrayList<String>();
 		discomforts.add("Appetitlosigkeit");
 		discomforts.add("Aufstoßen");
@@ -41,7 +47,7 @@ public class EntryDB {
 		return discomforts;
 	}
 
-	public static void persist(Entry entry) {
+	public void persist(Entry entry) {
 		System.out.println(entry.toString());
 	}
 
