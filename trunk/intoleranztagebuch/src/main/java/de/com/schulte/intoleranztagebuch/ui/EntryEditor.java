@@ -59,7 +59,6 @@ public class EntryEditor extends NavigationView implements ClickListener {
 		SpringContextHelper helper = new SpringContextHelper(
 				IntoleranzTagebuchApp.getApp());
 		entryDB = (EntryDB) helper.getBean("entryDB");
-
 		Locale locale = IntoleranzTagebuchApp.getApp().getLocale();
 		// set some sane default values for the entry
 		entry.setEatTime(new Date());

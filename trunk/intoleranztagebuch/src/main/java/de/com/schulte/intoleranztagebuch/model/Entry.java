@@ -12,6 +12,7 @@ public class Entry implements Serializable {
 	 */
 	private static final long serialVersionUID = 1361932826041345715L;
 
+	private String id;
 	private Date eatTime;
 	private String meal;
 	private String drink;
@@ -97,6 +98,14 @@ public class Entry implements Serializable {
 
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

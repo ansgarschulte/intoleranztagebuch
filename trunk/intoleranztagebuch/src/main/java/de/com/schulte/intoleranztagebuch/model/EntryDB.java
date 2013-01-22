@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.util.IndexedContainer;
 
@@ -16,6 +20,12 @@ public class EntryDB implements Serializable {
 	/**
 	 * 
 	 */
+	// @Autowired(required = false)
+	// MongoDbFactory mongoDbFactory;
+	//
+	// @Autowired(required = false)
+	MongoTemplate mongoTemplate;
+
 	private static final long serialVersionUID = 6109802182896950053L;
 
 	public Container getDiscomforts(Locale locale) {
@@ -48,7 +58,19 @@ public class EntryDB implements Serializable {
 	}
 
 	public void persist(Entry entry) {
-		System.out.println(entry.toString());
+		User u = new User();
+		u.setId("1");
+		u.getEntries().add(entry);
+		mongoTemplate.save(u);
+		List<User> users = mongoTemplate.find(new Query(Criteria.where("id")
+				.is("1")), User.class);
+		for (User user : users) {
+			System.out.println(user.toString());
+		}
+	}
+
+	public void setMongoTemplate(MongoTemplate mongoTemplate) {
+		this.mongoTemplate = mongoTemplate;
 	}
 
 }
