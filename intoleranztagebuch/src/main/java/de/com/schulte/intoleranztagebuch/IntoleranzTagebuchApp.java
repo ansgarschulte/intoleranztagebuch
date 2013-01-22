@@ -1,8 +1,14 @@
 package de.com.schulte.intoleranztagebuch;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.core.MongoTemplate;
+
 import com.vaadin.addon.touchkit.ui.TouchKitApplication;
 import com.vaadin.addon.touchkit.ui.TouchKitWindow;
 
+import de.com.schulte.intoleranztagebuch.model.EntryDB;
 import de.com.schulte.intoleranztagebuch.ui.MainTabsheet;
 
 /**
@@ -23,13 +29,18 @@ public class IntoleranzTagebuchApp extends TouchKitApplication {
 	// }
 
 	private TouchKitWindow mainWindow;
+	private EntryDB entryDB;
+	private MongoTemplate mongoTemplate;
+	private MongoDbFactory mongoDbFactory;
 
+	@PostConstruct
 	@Override
 	public void init() {
 		/*
 		 * Custom configurations (app icons etc) for main window need to be set
 		 * eagerly as they are written on the "host page".
 		 */
+		initBeans();
 		configureMainWindow();
 		setTheme("intoleranztagebuch");
 		// setUser(Translations.get(getLocale()).getObject("Willy Wilderness"));
@@ -75,4 +86,18 @@ public class IntoleranzTagebuchApp extends TouchKitApplication {
 	public static IntoleranzTagebuchApp getApp() {
 		return (IntoleranzTagebuchApp) get();
 	}
+
+	public void initBeans() {
+		SpringContextHelper helper = new SpringContextHelper(
+				IntoleranzTagebuchApp.getApp());
+		entryDB = (EntryDB) helper.getBean("entryDB");
+		mongoDbFactory = (MongoDbFactory) helper.getBean("mongoDbFactory");
+		mongoTemplate = (MongoTemplate) helper.getBean("mongoTemplate");
+		entryDB.setMongoTemplate(mongoTemplate);
+	}
+
+	public EntryDB getEntryDB() {
+		return entryDB;
+	}
+
 }
