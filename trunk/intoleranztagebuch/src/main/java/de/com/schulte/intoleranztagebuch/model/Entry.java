@@ -2,6 +2,7 @@ package de.com.schulte.intoleranztagebuch.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -12,7 +13,7 @@ public class Entry implements Serializable {
 	 */
 	private static final long serialVersionUID = 1361932826041345715L;
 
-	private String id;
+	private String id = UUID.randomUUID().toString();
 	private Date eatTime;
 	private String meal;
 	private String drink;

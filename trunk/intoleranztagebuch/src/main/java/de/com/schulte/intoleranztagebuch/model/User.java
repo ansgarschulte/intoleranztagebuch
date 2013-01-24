@@ -3,6 +3,7 @@ package de.com.schulte.intoleranztagebuch.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -13,11 +14,17 @@ public class User implements Serializable {
 	 */
 	private static final long serialVersionUID = -6098924876011413852L;
 	private String id;
+	private String username;
 	private String surname;
 	private String name;
 	private String email;
-	private String password;
-	private List<Entry> entries = new ArrayList<Entry>();
+	private String passwordHash;
+	private List<Entry> entries;
+
+	public User() {
+		id = UUID.randomUUID().toString();
+		entries = new ArrayList<Entry>();
+	}
 
 	public String getSurname() {
 		return surname;
@@ -43,14 +50,6 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	public String getId() {
 		return id;
 	}
@@ -69,6 +68,22 @@ public class User implements Serializable {
 
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPasswordHash() {
+		return passwordHash;
+	}
+
+	public void setPasswordHash(String passwordHash) {
+		this.passwordHash = passwordHash;
 	}
 
 }
