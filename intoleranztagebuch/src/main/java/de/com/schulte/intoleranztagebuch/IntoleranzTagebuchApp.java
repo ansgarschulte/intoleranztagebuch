@@ -2,6 +2,8 @@ package de.com.schulte.intoleranztagebuch;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
@@ -32,6 +34,9 @@ public class IntoleranzTagebuchApp extends TouchKitApplication {
 	private EntryDB entryDB;
 	private MongoTemplate mongoTemplate;
 	private MongoDbFactory mongoDbFactory;
+
+	private static final Log LOG = LogFactory
+			.getLog(IntoleranzTagebuchApp.class);
 
 	@PostConstruct
 	@Override
@@ -64,6 +69,15 @@ public class IntoleranzTagebuchApp extends TouchKitApplication {
 	 */
 	@Override
 	public void onBrowserDetailsReady() {
+		// TODO Login Screen
+		if (entryDB.login("karin", "karin") == null) {
+			if (!entryDB.register("karin", "karin", "egal", "Karin",
+					"aa@bb.com")) {
+				LOG.error("Irgendwas ist kommisch");
+			} else {
+				entryDB.login("karin", "karin");
+			}
+		}
 		mainWindow.setContent(new MainTabsheet());
 	}
 
