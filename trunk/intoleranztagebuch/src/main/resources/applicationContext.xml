@@ -1,38 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:cloud="http://schema.cloudfoundry.org/spring"
-	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
-	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cloud="http://schema.cloudfoundry.org/spring"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
-		xsi:schemaLocation="http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.1.xsd
 		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
 		http://schema.cloudfoundry.org/spring http://schema.cloudfoundry.org/spring/cloudfoundry-spring-0.7.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<bean name="entryDB" id="entryDB"
-		class="de.com.schulte.intoleranztagebuch.model.EntryDB" />
+	<context:property-placeholder location="classpath*:*.properties" />
+
+	<!-- Turn on AspectJ @Configurable support -->
+	<context:spring-configured />
+	<context:annotation-config />
+
+	<context:component-scan base-package="de.com.schulte.intoleranztagebuch" />
+
+	<!-- Turn on @Autowired, @PostConstruct etc support -->
+	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
+	<bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
+
+
+<!-- 	<bean name="entryDB" id="entryDB" -->
+<!-- 		class="de.com.schulte.intoleranztagebuch.model.EntryDB" /> -->
 
 
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
 		<constructor-arg ref="mongoDbFactory" />
 	</bean>
-	
-<!-- 	<mongo:db-factory -->
-<!--     id="mongoDbFactory" -->
-<!--     dbname="${mongo.name}" -->
-<!--     host="${mongo.host}" -->
-<!--     port="27017" -->
-<!--     username="${mongo.username}" -->
-<!--     password="${mongo.password}" /> -->
-	
+
+	<!-- <mongo:db-factory -->
+	<!-- id="mongoDbFactory" -->
+	<!-- dbname="${mongo.name}" -->
+	<!-- host="${mongo.host}" -->
+	<!-- port="27017" -->
+	<!-- username="${mongo.username}" -->
+	<!-- password="${mongo.password}" /> -->
+
+	<!-- <beans profile="default"> -->
+	<!-- <mongo:db-factory id="mongoDbFactory" dbname="db" -->
+	<!-- host="127.0.0.1" port="27017" username="" password="" /> -->
+	<!-- </beans> -->
 	<beans profile="default">
 		<mongo:db-factory id="mongoDbFactory" dbname="db"
-			host="127.0.0.1" port="27017" username="" password="" />
+			host="127.0.0.1" port="10100" username="79bf68f6-eb54-422e-82bf-7fb94c6ac424"
+			password="e5695a83-7a84-4aef-8550-c8176fd03d5a" />
 	</beans>
 
-	<beans profile="cloud">
-		<cloud:mongo-db-factory id="mongoDbFactory" />
-	</beans>
+	<!-- <beans profile="cloud"> -->
+	<!-- <cloud:mongo-db-factory id="mongoDbFactory" /> -->
+	<!-- </beans> -->
 </beans>

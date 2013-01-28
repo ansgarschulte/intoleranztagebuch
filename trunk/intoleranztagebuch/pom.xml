@@ -143,6 +143,16 @@
 			<version>4.7</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>de.flexguse.vaadin.addon</groupId>
+			<artifactId>spring-touchkit-addon</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<dependency>
+				<groupId>org.dellroad</groupId>
+				<artifactId>dellroad-stuff-vaadin</artifactId>
+				<version>1.0.432</version>
+			</dependency>
 	</dependencies>
 
 	<build>

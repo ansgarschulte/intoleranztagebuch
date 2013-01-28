@@ -11,21 +11,24 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Service;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.util.IndexedContainer;
 
 import de.com.schulte.intoleranztagebuch.util.Translations;
 
+@Service
 public class EntryDB implements Serializable {
 
 	private User user;
 	// @Autowired(required = false)
 	// MongoDbFactory mongoDbFactory;
-	// @Autowired(required = false)
+	@Autowired(required = true)
 	private MongoTemplate mongoTemplate;
 
 	private static final long serialVersionUID = 6109802182896950053L;

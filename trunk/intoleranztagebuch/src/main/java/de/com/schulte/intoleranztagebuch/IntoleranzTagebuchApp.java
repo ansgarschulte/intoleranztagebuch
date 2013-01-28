@@ -1,23 +1,22 @@
 package de.com.schulte.intoleranztagebuch;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.web.context.ConfigurableWebApplicationContext;
 
-import com.vaadin.addon.touchkit.ui.TouchKitApplication;
 import com.vaadin.addon.touchkit.ui.TouchKitWindow;
 
 import de.com.schulte.intoleranztagebuch.model.EntryDB;
 import de.com.schulte.intoleranztagebuch.ui.MainTabsheet;
+import de.flexguse.vaadin.addon.spring.touchkit.SpringTouchkitApplication;
 
 /**
  * The Application's "main" class
  */
-@SuppressWarnings("serial")
-public class IntoleranzTagebuchApp extends TouchKitApplication {
+public class IntoleranzTagebuchApp extends SpringTouchkitApplication {
 	// @Override
 	// public void onBrowserDetailsReady() {
 	// Button button = new Button("Click Me ATZE NOW");
@@ -30,25 +29,60 @@ public class IntoleranzTagebuchApp extends TouchKitApplication {
 	// getMainWindow().addComponent(button);
 	// }
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7507626506862196908L;
 	private TouchKitWindow mainWindow;
+	@Autowired
 	private EntryDB entryDB;
+	@Autowired
 	private MongoTemplate mongoTemplate;
+	@Autowired
 	private MongoDbFactory mongoDbFactory;
+	@Autowired
+	private MainTabsheet mainTabsheet;
+	@Autowired
+	private TouchKitWindow intoleranzTagebuchWindow;
 
 	private static final Log LOG = LogFactory
 			.getLog(IntoleranzTagebuchApp.class);
 
-	@PostConstruct
+	// @Override
+	// public void init() {
+	// /*
+	// * Custom configurations (app icons etc) for main window need to be set
+	// * eagerly as they are written on the "host page".
+	// */
+	// // initBeans();
+	// configureMainWindow();
+	// setTheme("intoleranztagebuch");
+	// // setUser(Translations.get(getLocale()).getObject("Willy Wilderness"));
+	// }
+
 	@Override
-	public void init() {
+	protected void initSpringApplication(
+			ConfigurableWebApplicationContext context) {
+
 		/*
-		 * Custom configurations (app icons etc) for main window need to be set
-		 * eagerly as they are written on the "host page".
+		 * Initialise the application. Don't forget to run the init method in
+		 * the super class, otherwise you get an error the Vaadin Application
+		 * Window can't be found.
 		 */
-		initBeans();
+		super.initSpringApplication(context);
+
+		// TODO Login Screen
+		if (entryDB.login("karin", "karin") == null) {
+			if (!entryDB.register("karin", "karin", "egal", "Karin",
+					"aa@bb.com")) {
+				LOG.error("Irgendwas ist kommisch");
+			} else {
+				entryDB.login("karin", "karin");
+			}
+		}
 		configureMainWindow();
-		setTheme("intoleranztagebuch");
-		// setUser(Translations.get(getLocale()).getObject("Willy Wilderness"));
+		mainTabsheet.init();
+		mainWindow.setContent(mainTabsheet);
 	}
 
 	/**
@@ -69,20 +103,11 @@ public class IntoleranzTagebuchApp extends TouchKitApplication {
 	 */
 	@Override
 	public void onBrowserDetailsReady() {
-		// TODO Login Screen
-		if (entryDB.login("karin", "karin") == null) {
-			if (!entryDB.register("karin", "karin", "egal", "Karin",
-					"aa@bb.com")) {
-				LOG.error("Irgendwas ist kommisch");
-			} else {
-				entryDB.login("karin", "karin");
-			}
-		}
-		mainWindow.setContent(new MainTabsheet());
+
 	}
 
 	private void configureMainWindow() {
-		mainWindow = new IntoleranzTagebuchWindow();
+		mainWindow = intoleranzTagebuchWindow;
 		setMainWindow(mainWindow);
 	}
 
@@ -99,15 +124,6 @@ public class IntoleranzTagebuchApp extends TouchKitApplication {
 	 */
 	public static IntoleranzTagebuchApp getApp() {
 		return (IntoleranzTagebuchApp) get();
-	}
-
-	public void initBeans() {
-		SpringContextHelper helper = new SpringContextHelper(
-				IntoleranzTagebuchApp.getApp());
-		entryDB = (EntryDB) helper.getBean("entryDB");
-		mongoDbFactory = (MongoDbFactory) helper.getBean("mongoDbFactory");
-		mongoTemplate = (MongoTemplate) helper.getBean("mongoTemplate");
-		entryDB.setMongoTemplate(mongoTemplate);
 	}
 
 	public EntryDB getEntryDB() {

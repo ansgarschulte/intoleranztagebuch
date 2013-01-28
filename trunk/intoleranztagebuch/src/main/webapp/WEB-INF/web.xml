@@ -22,19 +22,23 @@
 			<param-name>widgetset</param-name>
 			<param-value>de.com.schulte.intoleranztagebuch.gwt.AppWidgetSet</param-value>
 		</init-param>
+		<init-param>
+			<param-name>vaadinContextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring/mobileApplicationContext.xml</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Vaadin Application Servlet</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath*:applicationContext.xml</param-value>
-	</context-param>
+<!-- 	<listener> -->
+<!-- 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class> -->
+<!-- 	</listener> -->
+<!-- 	<context-param> -->
+<!-- 		<param-name>contextConfigLocation</param-name> -->
+<!-- 		<param-value>classpath*:applicationContext.xml</param-value> -->
+<!-- 	</context-param> -->
 	<!-- Configure these is you need "fallback" application or non supported 
 		browsers -->
 	<!-- <init-param> <description> Vaadin fallback application class to start</description> 
