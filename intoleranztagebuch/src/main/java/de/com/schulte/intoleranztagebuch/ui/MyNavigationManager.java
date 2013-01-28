@@ -8,8 +8,11 @@ public class MyNavigationManager extends NavigationManager {
 	 */
 	private static final long serialVersionUID = -5474560195730482858L;
 
+	// @Autowired
+	// private EntryEditor entryEditor;
+
 	public MyNavigationManager() {
-		navigateTo(new EntryEditor());
+		// navigateTo(entryEditor);
 	}
 
 }
