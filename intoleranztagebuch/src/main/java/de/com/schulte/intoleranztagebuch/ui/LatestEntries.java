@@ -32,6 +32,10 @@ public class LatestEntries extends NavigationView implements ClickListener {
 	private ResourceBundle tr;
 
 	private Table table = new Table() {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6451968215677625867L;
 		private DateFormat df;
 
 		@Override
@@ -78,7 +82,7 @@ public class LatestEntries extends NavigationView implements ClickListener {
 		tr = Translations.get(getLocale());
 		setCaption(tr.getString("HistorieTabelle"));
 
-		table = new Table("This is my Table");
+		table = new Table("Essen");
 
 		/*
 		 * Define the names and data types of columns. The "default value"
