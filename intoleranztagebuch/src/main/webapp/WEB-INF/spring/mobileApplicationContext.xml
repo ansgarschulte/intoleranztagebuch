@@ -67,11 +67,11 @@
 	
 	
 	
-<!-- 	<beans profile="default"> -->
-<!-- 		<mongo:db-factory id="mongoDbFactory" dbname="db" host="127.0.0.1" port="27017" username="" password="" /> -->
-<!-- 	</beans> -->
-
 	<beans profile="default">
+		<mongo:db-factory id="mongoDbFactory" dbname="db" host="127.0.0.1" port="27017" username="" password="" />
+	</beans>
+
+	<beans profile="cloud">
 		<cloud:mongo-db-factory id="mongoDbFactory" service-name="MyMongoDB"/>
 	</beans>
 

@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.cloudfoundry.runtime.env.CloudEnvironment;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -333,9 +334,9 @@ public abstract class SpringContextApplication extends ContextApplication {
 			servletContext = test.getHttpSession().getServletContext();
 
 		}
+
 		parent = WebApplicationContextUtils
 				.getWebApplicationContext(servletContext);
-
 		// Create and configure a new application context for this Application
 		// instance
 		this.context = new XmlWebApplicationContext();
@@ -376,6 +377,14 @@ public abstract class SpringContextApplication extends ContextApplication {
 
 		// Invoke any subclass setup
 		this.postProcessWebApplicationContext(context);
+
+		CloudEnvironment env = new CloudEnvironment();
+		if (env.getInstanceInfo() != null) {
+			System.out.println("cloud API: " + env.getCloudApiUri());
+			context.getEnvironment().setActiveProfiles("cloud");
+		} else {
+			context.getEnvironment().setActiveProfiles("default");
+		}
 
 		// Refresh context
 		this.context.refresh();
