@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -101,8 +102,12 @@ public class EntryDB implements Serializable {
 
 		for (int i = 0; i < getAllDiscomforts().size(); i++) {
 			String idByIndex = (String) indexedContainer.getIdByIndex(i);
+			String value = "";
+			if (StringUtils.isNotBlank(idByIndex)) {
+				value = tr.getString(idByIndex);
+			}
 			indexedContainer.getItem(idByIndex).getItemProperty("lang")
-					.setValue(tr.getString(idByIndex));
+					.setValue(value);
 		}
 
 		return indexedContainer;
@@ -110,6 +115,7 @@ public class EntryDB implements Serializable {
 
 	private List<String> getAllDiscomforts() {
 		List<String> discomforts = new ArrayList<String>();
+		discomforts.add("");
 		discomforts.add("Appetitlosigkeit");
 		discomforts.add("Aufstoßen");
 		discomforts.add("Bauchschmerzen");
@@ -123,7 +129,9 @@ public class EntryDB implements Serializable {
 	}
 
 	public void persist(Entry entry) {
-		user.getEntries().add(entry);
+		List<Entry> entries = user.getEntries();
+		removeFromEntryList(entry.getId(), entries);
+		entries.add(entry);
 		mongoTemplate.save(user);
 		LOG.info("Saved User:" + user);
 	}
@@ -147,6 +155,27 @@ public class EntryDB implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public void deleteEntry(Entry entry) {
+		String entryId = entry.getId();
+		deleteEntry(entryId);
+	}
+
+	private void deleteEntry(String entryId) {
+		List<Entry> entries = user.getEntries();
+		removeFromEntryList(entryId, entries);
+		mongoTemplate.save(user);
+		LOG.info("Saved User:" + user);
+	}
+
+	private void removeFromEntryList(String entryId, List<Entry> entries) {
+		for (Iterator<Entry> iterator = entries.iterator(); iterator.hasNext();) {
+			Entry e = (Entry) iterator.next();
+			if (e.getId().equals(entryId)) {
+				iterator.remove();
+			}
+		}
 	}
 
 }

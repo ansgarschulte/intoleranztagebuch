@@ -2,18 +2,17 @@ package de.com.schulte.intoleranztagebuch.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Entry implements Serializable {
+public class Entry implements Serializable, Comparable<Entry> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1361932826041345715L;
 
-	private String id = UUID.randomUUID().toString();
+	private String id = new Long(new Date().getTime()).toString();
 	private Date eatTime;
 	private String meal;
 	private String drink;
@@ -107,6 +106,11 @@ public class Entry implements Serializable {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	@Override
+	public int compareTo(Entry o) {
+		return this.getId().compareTo(o.getId()) * -1;
 	}
 
 }
