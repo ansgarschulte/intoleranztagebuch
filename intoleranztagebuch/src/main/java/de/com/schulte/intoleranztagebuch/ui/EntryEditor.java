@@ -7,6 +7,8 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.addon.formbinder.PreCreatedFieldsHelper;
+import org.vaadin.addon.formbinder.PropertyId;
+import org.vaadin.addon.formbinder.ViewBoundForm;
 
 import com.vaadin.addon.touchkit.ui.NavigationView;
 import com.vaadin.addon.touchkit.ui.VerticalComponentGroup;
@@ -36,21 +38,31 @@ public class EntryEditor extends NavigationView implements ClickListener {
 	private static final long serialVersionUID = -7789280347185252987L;
 	private Button cancel = new Button(null, this);
 	private Button save = new Button(null, this);
+	private Button deleteButton = new Button(null, this);
 
 	private Entry entry = new Entry();
 
 	private CssLayout layout = new CssLayout();
 	private ResourceBundle tr;
 	private FormLayout mealLayout = new FormLayout();
+	@PropertyId("discomforts")
 	private ComboBox discomfortsField;
+	@PropertyId("meal")
 	private TextArea mealField;
+	@PropertyId("drink")
 	private TextField drinkField;
+	@PropertyId("eatTime")
 	private DateField eatTimeField;
+	@PropertyId("discomfortTime")
 	private DateField discomfortTimeField;
+	@PropertyId("supposedCause")
 	private TextField supposedCauseField;
 
 	@Autowired
 	private EntryDB entryDB;
+	@Autowired
+	private LatestEntries latestEntries;
+	private ViewBoundForm viewBoundForm;
 
 	public EntryEditor() {
 	}
@@ -67,6 +79,7 @@ public class EntryEditor extends NavigationView implements ClickListener {
 		// add and configure save and cancel buttons
 		cancel.setCaption(tr.getString("Cancel"));
 		save.setCaption(tr.getString("Save"));
+		deleteButton.setCaption(tr.getString("Delete"));
 		setLeftComponent(cancel);
 		setRightComponent(save);
 
@@ -115,6 +128,7 @@ public class EntryEditor extends NavigationView implements ClickListener {
 		discomfortsField.setWidth("100%");
 		discomfortsField.setFilteringMode(ComboBox.FILTERINGMODE_CONTAINS);
 		discomfortsField.setItemCaptionPropertyId("lang");
+		discomfortsField.setNullSelectionAllowed(true);
 
 		supposedCauseField = new TextField(tr.getString("supposed Cause"));
 		supposedCauseField.setWidth("100%");
@@ -133,9 +147,19 @@ public class EntryEditor extends NavigationView implements ClickListener {
 
 		layout.addComponent(formWrapper);
 		layout.addComponent(discomfortLayout);
+		layout.addComponent(deleteButton);
 
 		layout.setMargin(true);
-		setContent(layout);
+
+		viewBoundForm = new ViewBoundForm();
+		viewBoundForm.setLayout(layout);
+		// configure form (delegated to PreCreatedFieldsHelper) to search
+		// suitable fields from sub form views
+		viewBoundForm.setCustomFieldSources(this);
+
+		viewBoundForm.setItemDataSource(new BeanItem<Entry>(entry));
+
+		setContent(viewBoundForm);
 	}
 
 	public void buttonClick(ClickEvent event) {
@@ -147,8 +171,30 @@ public class EntryEditor extends NavigationView implements ClickListener {
 			}
 
 			entryDB.persist(entry);
+		} else if (event.getButton() == deleteButton) {
+			entryDB.deleteEntry(entry);
 		}
-		getNavigationManager().navigateTo(new LatestEntries());
+		getNavigationManager().navigateTo(latestEntries);
+	}
+
+	public Entry getEntry() {
+		return entry;
+	}
+
+	public void setEntry(Entry entry) {
+		String discomforts = entry.getDiscomforts();
+		if (StringUtils.isBlank(discomforts)) {
+			discomfortsField.select(null);
+		} else {
+			discomfortsField.select(discomforts);
+		}
+		this.entry = entry;
+		viewBoundForm.setItemDataSource(new BeanItem<Entry>(entry));
+	}
+
+	@Override
+	protected void onBecomingVisible() {
+		super.onBecomingVisible();
 	}
 
 }

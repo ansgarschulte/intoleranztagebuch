@@ -80,6 +80,7 @@ public class IntoleranzTagebuchApp extends SpringTouchkitApplication {
 				entryDB.login("karin", "karin");
 			}
 		}
+		setTheme("intoleranztagebuch");
 		configureMainWindow();
 		mainTabsheet.init();
 		mainWindow.setContent(mainTabsheet);
