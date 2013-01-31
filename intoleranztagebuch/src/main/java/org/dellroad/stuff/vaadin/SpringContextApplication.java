@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2011 Archie L. Cobbs. All rights reserved.
  *
- * $Id$
+ * $Id: SpringContextApplication.java 422 2012-06-12 14:59:44Z archie.cobbs $
  */
 
 package org.dellroad.stuff.vaadin;
@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.cloudfoundry.runtime.env.CloudEnvironment;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -21,7 +22,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.SourceFilteringListener;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
-import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.context.support.XmlWebApplicationContext;
@@ -321,6 +321,7 @@ public abstract class SpringContextApplication extends ContextApplication {
 		// Find the application context associated with the servlet; it will be
 		// the parent
 		ServletContext servletContext;
+		WebApplicationContext parent;
 		HttpServletRequest request = ContextApplication.currentRequest();
 		try {
 			// getServletContext() is a servlet AIP 3.0 method, so don't freak
@@ -328,18 +329,20 @@ public abstract class SpringContextApplication extends ContextApplication {
 			servletContext = (ServletContext) HttpServletRequest.class
 					.getMethod("getServletContext").invoke(request);
 		} catch (Exception e) {
-			servletContext = ContextLoader.getCurrentWebApplicationContext()
-					.getServletContext();
-		}
-		WebApplicationContext parent = WebApplicationContextUtils
-				.getWebApplicationContext(servletContext);
+			com.vaadin.terminal.gwt.server.WebApplicationContext wac = (com.vaadin.terminal.gwt.server.WebApplicationContext) ContextApplication
+					.get().getContext();
+			servletContext = wac.getHttpSession().getServletContext();
 
+		}
+
+		parent = WebApplicationContextUtils
+				.getWebApplicationContext(servletContext);
 		// Create and configure a new application context for this Application
 		// instance
 		this.context = new XmlWebApplicationContext();
 		this.context
 				.setId(ConfigurableWebApplicationContext.APPLICATION_CONTEXT_ID_PREFIX
-						+ servletContext.getContextPath()
+						+ request.getContextPath()
 						+ "/"
 						+ this.getApplicationName()
 						+ "-"
@@ -374,6 +377,14 @@ public abstract class SpringContextApplication extends ContextApplication {
 
 		// Invoke any subclass setup
 		this.postProcessWebApplicationContext(context);
+
+		CloudEnvironment env = new CloudEnvironment();
+		if (env.getInstanceInfo() != null) {
+			System.out.println("cloud API: " + env.getCloudApiUri());
+			context.getEnvironment().setActiveProfiles("cloud");
+		} else {
+			context.getEnvironment().setActiveProfiles("default");
+		}
 
 		// Refresh context
 		this.context.refresh();
