@@ -148,11 +148,11 @@
 			<artifactId>spring-touchkit-addon</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>org.dellroad</groupId> -->
-		<!-- <artifactId>dellroad-stuff-vaadin</artifactId> -->
-		<!-- <version>1.0.592</version> -->
-		<!-- </dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.dellroad</groupId> -->
+<!-- 			<artifactId>dellroad-stuff-vaadin</artifactId> -->
+<!-- 			<version>1.0.592</version> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
