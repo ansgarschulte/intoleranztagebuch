@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2011 Archie L. Cobbs. All rights reserved.
  *
- * $Id: SpringContextApplication.java 422 2012-06-12 14:59:44Z archie.cobbs $
+ * $Id$
  */
 
 package org.dellroad.stuff.vaadin;
@@ -14,7 +14,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.cloudfoundry.runtime.env.CloudEnvironment;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -22,6 +21,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.SourceFilteringListener;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
+import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.context.support.XmlWebApplicationContext;
@@ -65,7 +65,7 @@ import com.vaadin.Application;
  * <h3>Vaadin Application as BeanFactory singleton</h3>
  * 
  * <p>
- * This {@link SpringContextApplication} instance can itself be exposed in, and
+ * This {@link MySpringContextApplication} instance can itself be exposed in, and
  * configured by, the associated Spring application context. Simply create a
  * bean definition that invokes {@link ContextApplication#get}: <blockquote>
  * 
@@ -76,7 +76,7 @@ import com.vaadin.Application;
  * </blockquote>
  * 
  * <p>
- * This then allows you to autowire the {@link SpringContextApplication} and
+ * This then allows you to autowire the {@link MySpringContextApplication} and
  * other UI components together, e.g.: <blockquote>
  * 
  * <pre>
@@ -108,12 +108,12 @@ import com.vaadin.Application;
  * </p>
  * 
  * <p>
- * Even if you don't explicitly define the {@link SpringContextApplication} bean
+ * Even if you don't explicitly define the {@link MySpringContextApplication} bean
  * in your Spring application context, it will still be available as a
  * dependency for autowiring into other beans (this is accomplished using
  * {@link ConfigurableListableBeanFactory#registerResolvableDependency
  * ConfigurableListableBeanFactory.registerResolvableDependency()}). Of course,
- * in this case the {@link SpringContextApplication} bean won't itself be
+ * in this case the {@link MySpringContextApplication} bean won't itself be
  * autowired or configured.
  * </p>
  * 
@@ -182,7 +182,7 @@ public abstract class SpringContextApplication extends ContextApplication {
 	}
 
 	/**
-	 * Get the {@link SpringContextApplication} instance associated with the
+	 * Get the {@link MySpringContextApplication} instance associated with the
 	 * current thread or throw an exception if there is none.
 	 * 
 	 * <p>
@@ -190,15 +190,15 @@ public abstract class SpringContextApplication extends ContextApplication {
 	 * narrower type.
 	 * </p>
 	 * 
-	 * @return the {@link SpringContextApplication} associated with the current
+	 * @return the {@link MySpringContextApplication} associated with the current
 	 *         thread
 	 * @throws IllegalStateException
 	 *             if the current thread is not servicing a Vaadin web request
 	 *             or the current Vaadin {@link com.vaadin.Application} is not a
-	 *             {@link SpringContextApplication}
+	 *             {@link MySpringContextApplication}
 	 */
-	public static SpringContextApplication get() {
-		return ContextApplication.get(SpringContextApplication.class);
+	public static MySpringContextApplication get() {
+		return ContextApplication.get(MySpringContextApplication.class);
 	}
 
 	/**
@@ -220,7 +220,7 @@ public abstract class SpringContextApplication extends ContextApplication {
 
 	/**
 	 * Initialize the application. Sub-classes of
-	 * {@link SpringContextApplication} must implement this method.
+	 * {@link MySpringContextApplication} must implement this method.
 	 * 
 	 * @param context
 	 *            the associated {@link WebApplicationContext} just created and
@@ -236,12 +236,12 @@ public abstract class SpringContextApplication extends ContextApplication {
 	 * {@link WebApplicationContext} have both been closed.
 	 * 
 	 * <p>
-	 * The implementation in {@link SpringContextApplication} does nothing.
+	 * The implementation in {@link MySpringContextApplication} does nothing.
 	 * Subclasses may override as necessary.
 	 * </p>
 	 * 
 	 * <p>
-	 * Note that if a {@link SpringContextApplication} instance is exposed in
+	 * Note that if a {@link MySpringContextApplication} instance is exposed in
 	 * the application context and configured with a Spring
 	 * {@linkplain org.springframework.beans.factory.DisposableBean#destroy
 	 * destroy method}, then that method will also be invoked when the
@@ -261,7 +261,7 @@ public abstract class SpringContextApplication extends ContextApplication {
 	 * refresh()}.
 	 * 
 	 * <p>
-	 * The implementation in {@link SpringContextApplication} does nothing.
+	 * The implementation in {@link MySpringContextApplication} does nothing.
 	 * Subclasses may override as necessary.
 	 * </p>
 	 * 
@@ -279,7 +279,7 @@ public abstract class SpringContextApplication extends ContextApplication {
 	 * context refresh.
 	 * 
 	 * <p>
-	 * The implementation in {@link SpringContextApplication} does nothing.
+	 * The implementation in {@link MySpringContextApplication} does nothing.
 	 * Subclasses may override as necessary.
 	 * </p>
 	 * 
@@ -298,7 +298,7 @@ public abstract class SpringContextApplication extends ContextApplication {
 	 * {@link #VAADIN_CONTEXT_LOCATION_PARAMETER} servlet parameter is set.
 	 * 
 	 * <p>
-	 * The implementation in {@link SpringContextApplication} returns this
+	 * The implementation in {@link MySpringContextApplication} returns this
 	 * instance's class' {@linkplain Class#getSimpleName simple name}.
 	 * </p>
 	 */
@@ -321,7 +321,6 @@ public abstract class SpringContextApplication extends ContextApplication {
 		// Find the application context associated with the servlet; it will be
 		// the parent
 		ServletContext servletContext;
-		WebApplicationContext parent;
 		HttpServletRequest request = ContextApplication.currentRequest();
 		try {
 			// getServletContext() is a servlet AIP 3.0 method, so don't freak
@@ -329,24 +328,22 @@ public abstract class SpringContextApplication extends ContextApplication {
 			servletContext = (ServletContext) HttpServletRequest.class
 					.getMethod("getServletContext").invoke(request);
 		} catch (Exception e) {
-			com.vaadin.terminal.gwt.server.WebApplicationContext test = (com.vaadin.terminal.gwt.server.WebApplicationContext) ContextApplication
-					.get().getContext();
-			servletContext = test.getHttpSession().getServletContext();
-
+			servletContext = ContextLoader.getCurrentWebApplicationContext()
+					.getServletContext();
 		}
-
-		parent = WebApplicationContextUtils
+		WebApplicationContext parent = WebApplicationContextUtils
 				.getWebApplicationContext(servletContext);
+
 		// Create and configure a new application context for this Application
 		// instance
 		this.context = new XmlWebApplicationContext();
 		this.context
 				.setId(ConfigurableWebApplicationContext.APPLICATION_CONTEXT_ID_PREFIX
-						+ request.getContextPath()
+						+ servletContext.getContextPath()
 						+ "/"
 						+ this.getApplicationName()
 						+ "-"
-						+ SpringContextApplication.UNIQUE_INDEX
+						+ MySpringContextApplication.UNIQUE_INDEX
 								.incrementAndGet());
 		this.context.setParent(parent);
 		this.context.setServletContext(servletContext);
@@ -371,20 +368,12 @@ public abstract class SpringContextApplication extends ContextApplication {
 							ConfigurableListableBeanFactory beanFactory) {
 						beanFactory.registerResolvableDependency(
 								Application.class,
-								SpringContextApplication.this);
+								MySpringContextApplication.this);
 					}
 				});
 
 		// Invoke any subclass setup
 		this.postProcessWebApplicationContext(context);
-
-		CloudEnvironment env = new CloudEnvironment();
-		if (env.getInstanceInfo() != null) {
-			System.out.println("cloud API: " + env.getCloudApiUri());
-			context.getEnvironment().setActiveProfiles("cloud");
-		} else {
-			context.getEnvironment().setActiveProfiles("default");
-		}
 
 		// Refresh context
 		this.context.refresh();
@@ -409,7 +398,7 @@ public abstract class SpringContextApplication extends ContextApplication {
 			ApplicationListener<ContextRefreshedEvent>, Serializable {
 		@Override
 		public void onApplicationEvent(ContextRefreshedEvent event) {
-			SpringContextApplication.this.onRefresh(event
+			MySpringContextApplication.this.onRefresh(event
 					.getApplicationContext());
 		}
 	}
@@ -418,12 +407,12 @@ public abstract class SpringContextApplication extends ContextApplication {
 	private class ContextCloseListener implements CloseListener, Serializable {
 		@Override
 		public void applicationClosed(CloseEvent closeEvent) {
-			SpringContextApplication.this.log
+			MySpringContextApplication.this.log
 					.info("closing application context associated with Vaadin application "
-							+ SpringContextApplication.this
+							+ MySpringContextApplication.this
 									.getApplicationName());
-			SpringContextApplication.this.context.close();
-			SpringContextApplication.this.destroySpringApplication();
+			MySpringContextApplication.this.context.close();
+			MySpringContextApplication.this.destroySpringApplication();
 		}
 	}
 }
