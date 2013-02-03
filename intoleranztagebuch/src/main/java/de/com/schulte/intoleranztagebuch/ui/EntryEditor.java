@@ -23,7 +23,6 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.Form;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
-import com.vaadin.ui.TextField;
 
 import de.com.schulte.intoleranztagebuch.IntoleranzTagebuchApp;
 import de.com.schulte.intoleranztagebuch.model.Entry;
@@ -50,13 +49,13 @@ public class EntryEditor extends NavigationView implements ClickListener {
 	@PropertyId("meal")
 	private TextArea mealField;
 	@PropertyId("drink")
-	private TextField drinkField;
+	private TextArea drinkField;
 	@PropertyId("eatTime")
 	private DateField eatTimeField;
 	@PropertyId("discomfortTime")
 	private DateField discomfortTimeField;
 	@PropertyId("supposedCause")
-	private TextField supposedCauseField;
+	private TextArea supposedCauseField;
 
 	@Autowired
 	private EntryDB entryDB;
@@ -106,7 +105,7 @@ public class EntryEditor extends NavigationView implements ClickListener {
 		mealField = new TextArea(tr.getString("meal"));
 		mealField.setWidth("100%");
 		mealField.setDebugId("meal");
-		drinkField = new TextField(tr.getString("drink"));
+		drinkField = new TextArea(tr.getString("drink"));
 		drinkField.setWidth("100%");
 		drinkField.setDebugId("drink");
 		eatTimeField = new DateField(tr.getString("mealtime"));
@@ -130,7 +129,7 @@ public class EntryEditor extends NavigationView implements ClickListener {
 		discomfortsField.setItemCaptionPropertyId("lang");
 		discomfortsField.setNullSelectionAllowed(true);
 
-		supposedCauseField = new TextField(tr.getString("supposed Cause"));
+		supposedCauseField = new TextArea(tr.getString("supposed Cause"));
 		supposedCauseField.setWidth("100%");
 		supposedCauseField.setDebugId("supposedCause");
 
