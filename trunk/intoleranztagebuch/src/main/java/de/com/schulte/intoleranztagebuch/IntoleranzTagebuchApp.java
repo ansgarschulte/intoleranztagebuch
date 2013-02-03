@@ -1,15 +1,25 @@
 package de.com.schulte.intoleranztagebuch;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
+import org.vaadin.openid.OpenIdHandler;
+import org.vaadin.openid.OpenIdHandler.UserAttribute;
 
 import com.vaadin.addon.touchkit.ui.TouchKitWindow;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 import de.com.schulte.intoleranztagebuch.model.EntryDB;
+import de.com.schulte.intoleranztagebuch.model.User;
 import de.com.schulte.intoleranztagebuch.ui.MainTabsheet;
 import de.flexguse.vaadin.addon.spring.touchkit.SpringTouchkitApplication;
 
@@ -71,18 +81,23 @@ public class IntoleranzTagebuchApp extends SpringTouchkitApplication {
 		 */
 		super.initSpringApplication(context);
 
-		// TODO Login Screen
-		if (entryDB.login("karin", "karin") == null) {
-			if (!entryDB.register("karin", "karin", "egal", "Karin",
-					"aa@bb.com")) {
-				LOG.error("Irgendwas ist kommisch");
-			} else {
-				entryDB.login("karin", "karin");
-			}
-		}
+		// if (entryDB.login("karin", "karin") == null) {
+		// if (!entryDB.register("karin", "karin", "egal", "Karin",
+		// "aa@bb.com")) {
+		// LOG.error("Irgendwas ist kommisch");
+		// } else {
+		// entryDB.login("karin", "karin");
+		// }
+		// }
 		setTheme("intoleranztagebuch");
-		configureMainWindow();
+		openIdInit();
+		// initITB();
+	}
+
+	private void initITB(TouchKitWindow touchKitWindow) {
+		// configureMainWindow();
 		mainTabsheet.init();
+		mainWindow.removeAllComponents();
 		mainWindow.setContent(mainTabsheet);
 	}
 
@@ -107,10 +122,10 @@ public class IntoleranzTagebuchApp extends SpringTouchkitApplication {
 
 	}
 
-	private void configureMainWindow() {
-		mainWindow = intoleranzTagebuchWindow;
-		setMainWindow(mainWindow);
-	}
+	// private void configureMainWindow() {
+	// mainWindow = intoleranzTagebuchWindow;
+	// setMainWindow(mainWindow);
+	// }
 
 	/**
 	 * TouchKitApplication already provides access to currently active
@@ -129,6 +144,75 @@ public class IntoleranzTagebuchApp extends SpringTouchkitApplication {
 
 	public EntryDB getEntryDB() {
 		return entryDB;
+	}
+
+	public void openIdInit() {
+		VerticalLayout container = new VerticalLayout();
+		container.setSpacing(true);
+		container.setMargin(true);
+
+		// TouchKitWindow mainWindow = new TouchKitWindow("OpenId test",
+		// container);
+		mainWindow = new IntoleranzTagebuchWindow();
+		setMainWindow(mainWindow);
+		mainWindow.addComponent(container);
+		final OpenIdHandler openIdHandler = new OpenIdHandler(this);
+		openIdHandler.setRequestedAttributes(UserAttribute.values());
+
+		final HorizontalLayout linkHolder = new HorizontalLayout();
+		linkHolder.setSpacing(true);
+		linkHolder
+				.addComponent(createLoginLink(openIdHandler,
+						"https://www.google.com/accounts/o8/id",
+						"Log in using Google"));
+		linkHolder.addComponent(createLoginLink(openIdHandler,
+				"https://me.yahoo.com", "Log in using Yahoo"));
+
+		container.addComponent(linkHolder);
+
+		openIdHandler.addListener(new OpenIdHandler.OpenIdLoginListener() {
+			public void onLogin(String id, Map<UserAttribute, String> userInfo) {
+				User openIDUser = new User();
+				openIDUser.setId(id);
+				openIDUser.setEmail(userInfo.get("email"));
+				openIDUser.setName(userInfo.get("firstname"));
+				openIDUser.setSurname(userInfo.get("lastname"));
+				entryDB.setUser(openIDUser);
+				LOG.info("Logged in User: " + openIDUser);
+				initITB(getMainWindow());
+				//
+				// Window window = getMainWindow();
+				// window.removeComponent(linkHolder);
+				// window.addComponent(new Label("Logged in identity: " + id));
+				// Set<UserAttribute> missingFields = EnumSet
+				// .allOf(UserAttribute.class);
+				// for (UserAttribute field : userInfo.keySet()) {
+				// window.addComponent(new Label(field + ": "
+				// + userInfo.get(field)));
+				// missingFields.remove(field);
+				// }
+				// for (UserAttribute registrationFields : missingFields) {
+				// window.addComponent(new Label(registrationFields
+				// + " not provided"));
+				// }
+
+				openIdHandler.close();
+			}
+
+			public void onCancel() {
+				getMainWindow().removeComponent(linkHolder);
+				getMainWindow().addComponent(
+						new Label("Too sad you didn't want to log in."));
+
+				openIdHandler.close();
+			}
+		});
+	}
+
+	private static Link createLoginLink(OpenIdHandler openIdHandler, String id,
+			String caption) {
+		return new Link(caption, openIdHandler.getLoginResource(id),
+				"openidLogin", 600, 400, Window.BORDER_NONE);
 	}
 
 }
