@@ -45,6 +45,8 @@
 
 	<bean id="entryEditor" class="de.com.schulte.intoleranztagebuch.ui.EntryEditor">
 	</bean>
+	<bean id="loginDialog" class="de.com.schulte.intoleranztagebuch.ui.LoginDialog">
+	</bean>
 
 
 
