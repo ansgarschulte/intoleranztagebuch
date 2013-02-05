@@ -178,4 +178,10 @@ public class EntryDB implements Serializable {
 		}
 	}
 
+	public User getUser(String username, String passwordCrypted) {
+		return mongoTemplate.findOne(
+				new Query(Criteria.where("username").is(user.getUsername())),
+				User.class);
+	}
+
 }
