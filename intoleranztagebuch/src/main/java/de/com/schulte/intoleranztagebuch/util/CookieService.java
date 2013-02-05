@@ -39,22 +39,24 @@ public class CookieService {
 		Cookie[] cookies = request.getCookies();
 		String username = null;
 		String passwordCrypted = null;
-		for (int i = 0; i < cookies.length; i++) {
-			if ("ITBUserName".equals(cookies[i].getName()))
-				username = cookies[i].getValue();
-			if ("ITBPasswordCrypted".equals(cookies[i].getName()))
-				passwordCrypted = cookies[i].getValue();
-		}
-		String password = null;
-		try {
-			if (StringUtils.isNotBlank(username)
-					&& StringUtils.isNotBlank(passwordCrypted)) {
-				password = PasswordService.decrypt(passwordCrypted);
-				return new LoginUser(username, password);
+		if (cookies != null) {
+			for (int i = 0; i < cookies.length; i++) {
+				if ("ITBUserName".equals(cookies[i].getName()))
+					username = cookies[i].getValue();
+				if ("ITBPasswordCrypted".equals(cookies[i].getName()))
+					passwordCrypted = cookies[i].getValue();
 			}
-		} catch (Exception e) {
-			LOG.error(e);
-			e.printStackTrace();
+			String password = null;
+			try {
+				if (StringUtils.isNotBlank(username)
+						&& StringUtils.isNotBlank(passwordCrypted)) {
+					password = PasswordService.decrypt(passwordCrypted);
+					return new LoginUser(username, password);
+				}
+			} catch (Exception e) {
+				LOG.error(e);
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}
