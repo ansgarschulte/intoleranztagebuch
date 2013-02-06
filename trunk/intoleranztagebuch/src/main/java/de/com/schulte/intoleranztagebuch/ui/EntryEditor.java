@@ -12,7 +12,9 @@ import org.vaadin.addon.formbinder.ViewBoundForm;
 
 import com.vaadin.addon.touchkit.ui.NavigationView;
 import com.vaadin.addon.touchkit.ui.VerticalComponentGroup;
+import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -123,7 +125,7 @@ public class EntryEditor extends NavigationView implements ClickListener {
 		discomfortTimeField.setWidth("100%");
 
 		discomfortsField = new ComboBox(tr.getString("discomforts"));
-		discomfortsField.setContainerDataSource(entryDB.getDiscomforts(locale));
+		discomfortsField.setContainerDataSource(getDiscomforts(locale));
 		discomfortsField.setWidth("100%");
 		discomfortsField.setFilteringMode(ComboBox.FILTERINGMODE_CONTAINS);
 		discomfortsField.setItemCaptionPropertyId("lang");
@@ -159,6 +161,25 @@ public class EntryEditor extends NavigationView implements ClickListener {
 		viewBoundForm.setItemDataSource(new BeanItem<Entry>(entry));
 
 		setContent(viewBoundForm);
+	}
+
+	private Container getDiscomforts(Locale locale) {
+		IndexedContainer indexedContainer = new IndexedContainer(
+				entryDB.getAllDiscomforts());
+		indexedContainer.addContainerProperty("lang", String.class, "");
+		ResourceBundle tr = Translations.get(locale);
+
+		for (int i = 0; i < entryDB.getAllDiscomforts().size(); i++) {
+			String idByIndex = (String) indexedContainer.getIdByIndex(i);
+			String value = "";
+			if (StringUtils.isNotBlank(idByIndex)) {
+				value = tr.getString(idByIndex);
+			}
+			indexedContainer.getItem(idByIndex).getItemProperty("lang")
+					.setValue(value);
+		}
+
+		return indexedContainer;
 	}
 
 	public void buttonClick(ClickEvent event) {

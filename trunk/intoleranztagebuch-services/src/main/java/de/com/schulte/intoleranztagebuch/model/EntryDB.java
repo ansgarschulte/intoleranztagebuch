@@ -6,8 +6,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -17,11 +15,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-
-import com.vaadin.data.Container;
-import com.vaadin.data.util.IndexedContainer;
-
-import de.com.schulte.intoleranztagebuch.util.Translations;
 
 @Service
 public class EntryDB implements Serializable {
@@ -94,26 +87,7 @@ public class EntryDB implements Serializable {
 		return hash;
 	}
 
-	public Container getDiscomforts(Locale locale) {
-		IndexedContainer indexedContainer = new IndexedContainer(
-				getAllDiscomforts());
-		indexedContainer.addContainerProperty("lang", String.class, "");
-		ResourceBundle tr = Translations.get(locale);
-
-		for (int i = 0; i < getAllDiscomforts().size(); i++) {
-			String idByIndex = (String) indexedContainer.getIdByIndex(i);
-			String value = "";
-			if (StringUtils.isNotBlank(idByIndex)) {
-				value = tr.getString(idByIndex);
-			}
-			indexedContainer.getItem(idByIndex).getItemProperty("lang")
-					.setValue(value);
-		}
-
-		return indexedContainer;
-	}
-
-	private List<String> getAllDiscomforts() {
+	public List<String> getAllDiscomforts() {
 		List<String> discomforts = new ArrayList<String>();
 		discomforts.add("");
 		discomforts.add("Appetitlosigkeit");
