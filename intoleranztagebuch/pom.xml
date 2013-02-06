@@ -6,7 +6,7 @@
 	<artifactId>intoleranztagebuch</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Vaadin TouchKit Web Application</name>
+	<name>Intoleranztagebuch - Vaadin TouchKit Web Application</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -48,6 +48,12 @@
 		</repository>
 	</repositories>
 	<dependencies>
+		<dependency>
+			<groupId>de.com.schulte</groupId>
+			<artifactId>intoleranztagebuch-services</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>jar</type>
+		</dependency>
 		<dependency>
 			<groupId>com.vaadin.addon</groupId>
 			<artifactId>vaadin-touchkit-agpl</artifactId>
