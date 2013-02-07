@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- $Id$ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cloud="http://schema.cloudfoundry.org/spring"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.1.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+		http://schema.cloudfoundry.org/spring http://schema.cloudfoundry.org/spring/cloudfoundry-spring-0.7.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- Activate Spring annotation support -->
+<!-- 	<context:annotation-config /> -->
+<!-- 	<context:spring-configured /> -->
+
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg ref="mongoDbFactory" />
+	</bean>
+
+	<bean id="entryDB" class="de.com.schulte.intoleranztagebuch.model.EntryDB">
+	</bean>
+
+
+
+
+
+	<!-- <beans profile="default"> -->
+	<!-- <mongo:db-factory id="mongoDbFactory" dbname="db" -->
+	<!-- host="127.0.0.1" port="10100" username="79bf68f6-eb54-422e-82bf-7fb94c6ac424" -->
+	<!-- password="e5695a83-7a84-4aef-8550-c8176fd03d5a" /> -->
+	<!-- </beans> -->
+
+
+
+
+
+	<beans profile="default">
+		<mongo:db-factory id="mongoDbFactory" dbname="db"
+			host="127.0.0.1" port="27017" username="" password="" />
+	</beans>
+
+	<beans profile="cloud">
+		<cloud:mongo-db-factory id="mongoDbFactory"
+			service-name="MyMongoDB" />
+<!-- 		<bean name="mailSender" class="example.SendGridMailSender"> -->
+<!-- 			<property name="apiUser" value="youremail@domain.com" /> -->
+<!-- 			<property name="apiKey" value="secureSecret" /> -->
+<!-- 		</bean> -->
+	</beans>
+
+
+
+
+
+
+</beans>
