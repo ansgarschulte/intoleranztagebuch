@@ -16,6 +16,7 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.Form;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 
 import de.com.schulte.intoleranztagebuch.IntoleranzTagebuchApp;
@@ -32,7 +33,7 @@ public class LoginDialog extends NavigationView {
 	private static final long serialVersionUID = -8387172570367347710L;
 	private Button registerButton;
 	private Button loginButton;
-	private TextField passwordTextField;
+	private PasswordField passwordTextField;
 	private TextField userTextField;
 	private ViewBoundForm viewBoundForm;
 	private LoginUser loginUser = new LoginUser();
@@ -109,7 +110,7 @@ public class LoginDialog extends NavigationView {
 		loginLayout.addComponent(userTextField);
 
 		// passwordTextField
-		passwordTextField = new TextField();
+		passwordTextField = new PasswordField();
 		passwordTextField.setCaption("Passwort");
 		passwordTextField.setImmediate(false);
 		passwordTextField.setWidth("-1px");

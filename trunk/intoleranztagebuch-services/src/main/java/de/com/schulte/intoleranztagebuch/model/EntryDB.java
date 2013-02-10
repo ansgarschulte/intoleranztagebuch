@@ -102,6 +102,15 @@ public class EntryDB implements Serializable {
 		return discomforts;
 	}
 
+	public List<String> getAllAssistanceUsed() {
+		List<String> assistances = new ArrayList<String>();
+		assistances.add("");
+		assistances.add("Fructosin");
+		assistances.add("Lactase");
+		assistances.add("Traubenzucker");
+		return assistances;
+	}
+
 	public void persist(Entry entry) {
 		List<Entry> entries = user.getEntries();
 		removeFromEntryList(entry.getId(), entries);

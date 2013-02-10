@@ -59,6 +59,7 @@ public class IntoleranzTagebuchApp extends SpringTouchkitApplication {
 
 	private static final Log LOG = LogFactory
 			.getLog(IntoleranzTagebuchApp.class);
+	private LoginUser userCookie;
 
 	// @Override
 	// public void init() {
@@ -87,7 +88,18 @@ public class IntoleranzTagebuchApp extends SpringTouchkitApplication {
 
 		mainWindow = new IntoleranzTagebuchWindow();
 		setMainWindow(mainWindow);
-		initLoginCookie();
+
+		if (userCookie != null) {
+			user = entryDB
+					.login(userCookie.getUser(), userCookie.getPassword());
+			if (user != null) {
+				initITB();
+			} else {
+				initLoginCookie();
+			}
+		} else {
+			initLoginCookie();
+		}
 		// initITB();
 	}
 
@@ -152,16 +164,23 @@ public class IntoleranzTagebuchApp extends SpringTouchkitApplication {
 			HttpServletResponse response) {
 		super.onRequestStart(request, response);
 		if (user == null) {
-			LoginUser userCookie = CookieService.getUserCookie(request);
-			if (userCookie != null) {
-				user = entryDB.login(userCookie.getUser(),
-						userCookie.getPassword());
-			}
+			userCookie = CookieService.getUserCookie(request);
 		}
 
 		// Store the reference to the response object for
 		// using it in event listeners
 		this.response = response;
+	}
+
+	public void logout() {
+		try {
+			CookieService.deleteCookie(userCookie, response);
+			user = null;
+			close();
+		} catch (Exception e) {
+			LOG.error(e);
+			e.printStackTrace();
+		}
 	}
 
 	public HttpServletResponse getResponse() {

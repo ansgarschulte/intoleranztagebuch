@@ -45,6 +45,7 @@ public class LatestEntries extends NavigationView implements ClickListener {
 	private EntryDB entryDB;
 
 	private Button addEntry = new Button(null, this);
+	private Button logout = new Button(null, this);
 
 	private ResourceBundle tr;
 
@@ -111,7 +112,8 @@ public class LatestEntries extends NavigationView implements ClickListener {
 		setContent(table);
 		//
 		addEntry.setIcon(new ThemeResource("linegraphics/plus.png"));
-		setLeftComponent(null);
+		logout.setCaption("Logout");
+		setLeftComponent(logout);
 		setRightComponent(addEntry);
 
 		table.addListener(new ItemClickListener() {
@@ -168,7 +170,8 @@ public class LatestEntries extends NavigationView implements ClickListener {
 		if (addEntry == event.getButton()) {
 			showEntryDetails(new Entry());
 			// getWindow().addWindow(popover);
-		} else {
+		} else if (logout == event.getButton()) {
+			IntoleranzTagebuchApp.getApp().logout();
 		}
 	}
 
