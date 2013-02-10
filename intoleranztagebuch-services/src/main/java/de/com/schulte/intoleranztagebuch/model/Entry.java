@@ -19,6 +19,7 @@ public class Entry implements Serializable, Comparable<Entry> {
 	private Date discomfortTime;
 	private String discomforts;
 	private String supposedCause;
+	private String assistanceUsed;
 
 	public Entry(Date eatTime, String meal, String drink) {
 		super();
@@ -28,7 +29,7 @@ public class Entry implements Serializable, Comparable<Entry> {
 	}
 
 	public Entry(Date eatTime, String meal, String drink, Date discomfortTime,
-			String discomforts, String supposedCause) {
+			String discomforts, String supposedCause, String assistanceUsed) {
 		super();
 		this.eatTime = eatTime;
 		this.meal = meal;
@@ -36,6 +37,7 @@ public class Entry implements Serializable, Comparable<Entry> {
 		this.discomfortTime = discomfortTime;
 		this.discomforts = discomforts;
 		this.supposedCause = supposedCause;
+		this.assistanceUsed = assistanceUsed;
 	}
 
 	public Entry() {
@@ -110,7 +112,15 @@ public class Entry implements Serializable, Comparable<Entry> {
 
 	// @Override
 	public int compareTo(Entry o) {
-		return this.getId().compareTo(o.getId()) * -1;
+		return this.getEatTime().compareTo(o.getEatTime()) * -1;
+	}
+
+	public String getAssistanceUsed() {
+		return assistanceUsed;
+	}
+
+	public void setAssistanceUsed(String assistanceUsed) {
+		this.assistanceUsed = assistanceUsed;
 	}
 
 }

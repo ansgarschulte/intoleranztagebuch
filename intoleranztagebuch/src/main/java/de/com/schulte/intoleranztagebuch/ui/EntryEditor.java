@@ -58,6 +58,8 @@ public class EntryEditor extends NavigationView implements ClickListener {
 	private DateField discomfortTimeField;
 	@PropertyId("supposedCause")
 	private TextArea supposedCauseField;
+	@PropertyId("assistanceUsed")
+	private ComboBox assitanceUsedField;
 
 	@Autowired
 	private EntryDB entryDB;
@@ -113,16 +115,26 @@ public class EntryEditor extends NavigationView implements ClickListener {
 		eatTimeField = new DateField(tr.getString("mealtime"));
 		eatTimeField.setResolution(DateField.RESOLUTION_MIN);
 		eatTimeField.setWidth("100%");
+		eatTimeField.setLocale(Locale.GERMANY);
+
+		assitanceUsedField = new ComboBox(tr.getString("assistanceUsed"));
+		assitanceUsedField.setContainerDataSource(getAllAssistanceUsed(locale));
+		assitanceUsedField.setWidth("100%");
+		assitanceUsedField.setFilteringMode(ComboBox.FILTERINGMODE_CONTAINS);
+		assitanceUsedField.setItemCaptionPropertyId("lang");
+		assitanceUsedField.setNullSelectionAllowed(true);
 
 		// add fields to form
 		mealLayout.addComponent(eatTimeField);
 		mealLayout.addComponent(mealField);
 		mealLayout.addComponent(drinkField);
+		mealLayout.addComponent(assitanceUsedField);
 
 		// discomforts
 		discomfortTimeField = new DateField(tr.getString("discomfortTime"));
 		discomfortTimeField.setResolution(DateField.RESOLUTION_MIN);
 		discomfortTimeField.setWidth("100%");
+		discomfortTimeField.setLocale(Locale.GERMANY);
 
 		discomfortsField = new ComboBox(tr.getString("discomforts"));
 		discomfortsField.setContainerDataSource(getDiscomforts(locale));
@@ -182,6 +194,25 @@ public class EntryEditor extends NavigationView implements ClickListener {
 		return indexedContainer;
 	}
 
+	private Container getAllAssistanceUsed(Locale locale) {
+		IndexedContainer indexedContainer = new IndexedContainer(
+				entryDB.getAllAssistanceUsed());
+		indexedContainer.addContainerProperty("lang", String.class, "");
+		ResourceBundle tr = Translations.get(locale);
+
+		for (int i = 0; i < entryDB.getAllAssistanceUsed().size(); i++) {
+			String idByIndex = (String) indexedContainer.getIdByIndex(i);
+			String value = "";
+			if (StringUtils.isNotBlank(idByIndex)) {
+				value = tr.getString(idByIndex);
+			}
+			indexedContainer.getItem(idByIndex).getItemProperty("lang")
+					.setValue(value);
+		}
+
+		return indexedContainer;
+	}
+
 	public void buttonClick(ClickEvent event) {
 		if (event.getButton() == save) {
 			if (StringUtils.isEmpty(entry.getMeal())) {
@@ -207,6 +238,12 @@ public class EntryEditor extends NavigationView implements ClickListener {
 			discomfortsField.select(null);
 		} else {
 			discomfortsField.select(discomforts);
+		}
+		String assitanceUsed = entry.getAssistanceUsed();
+		if (StringUtils.isBlank(assitanceUsed)) {
+			assitanceUsedField.select(null);
+		} else {
+			assitanceUsedField.select(assitanceUsed);
 		}
 		this.entry = entry;
 		viewBoundForm.setItemDataSource(new BeanItem<Entry>(entry));

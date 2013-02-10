@@ -41,10 +41,12 @@ public class CookieService {
 		String passwordCrypted = null;
 		if (cookies != null) {
 			for (int i = 0; i < cookies.length; i++) {
-				if ("ITBUserName".equals(cookies[i].getName()))
+				if ("ITBUsername".equals(cookies[i].getName())) {
 					username = cookies[i].getValue();
-				if ("ITBPasswordCrypted".equals(cookies[i].getName()))
+				}
+				if ("ITBPasswordCrypted".equals(cookies[i].getName())) {
 					passwordCrypted = cookies[i].getValue();
+				}
 			}
 			String password = null;
 			try {
