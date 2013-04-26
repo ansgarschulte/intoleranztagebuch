@@ -247,6 +247,7 @@ public class EntryEditor extends NavigationView implements ClickListener {
 		}
 		this.entry = entry;
 		viewBoundForm.setItemDataSource(new BeanItem<Entry>(entry));
+		eatTimeField.setLocale(Locale.GERMANY);
 	}
 
 	@Override
