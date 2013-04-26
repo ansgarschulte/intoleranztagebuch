@@ -20,5 +20,6 @@ public class IntoleranzTagebuchWindow extends TouchKitWindow {
 				+ "VAADIN/themes/intoleranztagebuch/startup.png");
 		setWebAppCapable(true);
 		setPersistentSessionCookie(true);
+		setImmediate(true);
 	}
 }
